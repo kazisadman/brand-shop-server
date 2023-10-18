@@ -9,7 +9,6 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.oiiyhkk.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -30,6 +29,15 @@ async function run() {
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
+
+    const carsColletction = client.db("carsDB").collection("cars");
+
+    app.post("/cars", async (req, res) => {
+      const newCar = req.body;
+      console.log(newCar);
+      const result = await carsColletction.insertOne(newCar);
+      res.send(result);
+    });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
@@ -38,7 +46,7 @@ async function run() {
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
-  res.send("hellow");
+  res.send(req.body);
 });
 
 app.listen(port, () => {
