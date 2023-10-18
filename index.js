@@ -31,11 +31,31 @@ async function run() {
     );
 
     const carsColletction = client.db("carsDB").collection("cars");
+    const cartColletction = client.db("carsDB").collection("cart");
 
     app.post("/cars", async (req, res) => {
       const newCar = req.body;
       console.log(newCar);
       const result = await carsColletction.insertOne(newCar);
+      res.send(result);
+    });
+
+    app.post("/cart", async (req, res) => {
+      const car = req.body;
+      console.log(car);
+      const result = await cartColletction.insertOne(car);
+      res.send(result);
+    });
+
+    app.get("/cars", async (req, res) => {
+      const cursor = carsColletction.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.get("/cart", async (req, res) => {
+      const cursor = cartColletction.find();
+      const result = await cursor.toArray();
       res.send(result);
     });
   } finally {
