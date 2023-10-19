@@ -5,7 +5,6 @@ require("dotenv").config();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const port = process.env.PORT || 5000;
 
-
 //middleware
 app.use(cors());
 app.use(express.json());
@@ -54,6 +53,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/cars/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await carsColletction.findOne(query);
+      res.send(result);
+    });
+
     app.get("/cart", async (req, res) => {
       const cursor = cartColletction.find();
       const result = await cursor.toArray();
@@ -64,6 +70,26 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await cartColletction.deleteOne(query);
+      res.send(result);
+    });
+
+    app.put("/cars/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateCar = req.body;
+      const options = { upsert: true };
+      const updatedCar = {
+        $set: {
+          brand_name: updateCar.brand_name,
+          car_name: updateCar.car_name,
+          car_image: updateCar.car_image,
+          body_type: updateCar.body_type,
+          price: updateCar.price,
+          short_description: updateCar.short_description,
+          rating: updateCar.rating,
+        },
+      };
+      const result = await carsColletction.updateOne(filter, updatedCar, options);
       res.send(result);
     });
   } finally {
