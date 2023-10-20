@@ -32,6 +32,7 @@ async function run() {
 
     const carsColletction = client.db("carsDB").collection("cars");
     const cartColletction = client.db("carsDB").collection("cart");
+    const brandColletction = client.db("carsDB").collection("brand");
 
     app.post("/cars", async (req, res) => {
       const newCar = req.body;
@@ -49,6 +50,12 @@ async function run() {
 
     app.get("/cars", async (req, res) => {
       const cursor = carsColletction.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.get("/brand", async (req, res) => {
+      const cursor = brandColletction.find();
       const result = await cursor.toArray();
       res.send(result);
     });
