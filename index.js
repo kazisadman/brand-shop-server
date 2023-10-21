@@ -23,7 +23,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
@@ -73,6 +73,14 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/cart/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await cartColletction.findOne(query);
+      res.send(result);
+      console.log(result);
+    });
+
     app.delete("/cart/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -96,7 +104,11 @@ async function run() {
           rating: updateCar.rating,
         },
       };
-      const result = await carsColletction.updateOne(filter, updatedCar, options);
+      const result = await carsColletction.updateOne(
+        filter,
+        updatedCar,
+        options
+      );
       res.send(result);
     });
   } finally {
